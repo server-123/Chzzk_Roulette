@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Networking;
 using WebSocketSharp;
@@ -175,15 +176,59 @@ public class ChzzkChat : MonoBehaviour
     WebSocket ws;
 
     [Header("Vote")]
-    public List<(string nickname, bool sub, bool ex)> User;
+    public GameObject userBox;
+    public List<Profile> p;
+    public List<string> User;
     public bool collecting = false;
+    public bool roulette = false;
+    public bool vote = false;
+    int count;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
+    
+    public void SetRoulette()
+    {
+        roulette = true;
+        vote = false;
+    }
+
+    public void SetVote()
+    {
+        roulette = false;
+        vote = true;
+    }
+
+    public void Home()
+    {
+        roulette = false;
+        vote = false;
+        collecting = false;
+    }
+
+    public void Finish()
+    {
+        roulette = false;
+        vote = false;
+        collecting = false;
+    }
 
     public void InitializeUser()
     {
-        User = new List<(string nickname, bool sub, bool ex)>();
+        p = new List<Profile>();
+        User = new List<string>();
+        count = 0;
+    }
+
+    void Update()
+    {
+        if(count != User.Count)
+        {
+            userBox.GetComponent<User>().profile = p[User.Count - 1];
+            GameObject Box = Instantiate(userBox);
+            Box.transform.SetParent(GameObject.Find("Content").transform);
+        }
+        count = User.Count;
     }
 
     public void ChzzkConnect()
@@ -305,16 +350,11 @@ public class ChzzkChat : MonoBehaviour
                 for (int i = 0; i < d.bdy.Length; i++)
                 {
                     Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
-                    bool sub = (profile.streamingProperty.subscription.tier != 0);
-                    bool contain = false;
 
-                    for (i = 0; i < User.Count; i++)
+                    if (!User.Contains(profile.nickname) && collecting && roulette)
                     {
-                        if (User[i].nickname == profile.nickname) contain = true;
-                    }
-                    if (!contain && collecting)
-                    {
-                        User.Add((profile.nickname, sub, false));
+                        p.Add(profile);
+                        User.Add(profile.nickname);
                     }
                 }
                 break;
