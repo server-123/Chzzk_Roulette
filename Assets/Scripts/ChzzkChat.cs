@@ -206,13 +206,6 @@ public class ChzzkChat : MonoBehaviour
         collecting = false;
     }
 
-    public void Finish()
-    {
-        roulette = false;
-        vote = false;
-        collecting = false;
-    }
-
     public void InitializeUser()
     {
         p = new List<Profile>();

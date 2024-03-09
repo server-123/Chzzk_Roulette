@@ -12,8 +12,11 @@ public class User : MonoBehaviour
 
     public Text text;
 
+    ChzzkChat chz;
+
     void Start()
     {
+        chz = GameObject.Find("Manager").GetComponent<ChzzkChat>();
         text.text = profile.nickname;
         sub = (profile.streamingProperty.subscription.tier != 0);
     }
@@ -28,5 +31,7 @@ public class User : MonoBehaviour
         {
             text.color = new Color32(223, 226, 234, 255);
         }
+
+        if (!chz.User.Contains(profile.nickname)) Destroy(this.gameObject);
     }
 }
