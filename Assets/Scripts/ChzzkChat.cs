@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using WebSocketSharp;
@@ -172,14 +173,17 @@ public class ChzzkChat : MonoBehaviour
     public string accessToken;
 
     WebSocket ws;
-    public List<(string, bool)> User;
+
+    [Header("Vote")]
+    public List<(string nickname, bool sub, bool ex)> User;
+    public bool collecting = false;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
 
     public void InitializeUser()
     {
-        User = new List<(string, bool)>();
+        User = new List<(string nickname, bool sub, bool ex)>();
     }
 
     public void ChzzkConnect()
@@ -301,10 +305,16 @@ public class ChzzkChat : MonoBehaviour
                 for (int i = 0; i < d.bdy.Length; i++)
                 {
                     Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
-                    if (!User.Contains((profile.nickname, true)))
+                    bool sub = (profile.streamingProperty.subscription.tier != 0);
+                    bool contain = false;
+
+                    for (i = 0; i < User.Count; i++)
                     {
-                        if(profile.streamingProperty.subscription.tier == 0) User.Add((profile.nickname, false));
-                        else User.Add((profile.nickname, true));
+                        if (User[i].nickname == profile.nickname) contain = true;
+                    }
+                    if (!contain && collecting)
+                    {
+                        User.Add((profile.nickname, sub, false));
                     }
                 }
                 break;
