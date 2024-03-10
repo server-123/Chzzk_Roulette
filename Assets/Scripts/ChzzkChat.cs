@@ -224,6 +224,11 @@ public class ChzzkChat : MonoBehaviour
         count = User.Count;
     }
 
+    void OnApplicationQuit()
+    {
+        Disconncect();
+    }
+
     public void ChzzkConnect()
     {
         channelName = "";
