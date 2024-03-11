@@ -182,6 +182,7 @@ public class ChzzkChat : MonoBehaviour
     public bool collecting = false;
     public bool roulette = false;
     public bool vote = false;
+    public bool subOnly = false;
     int count;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
@@ -215,13 +216,14 @@ public class ChzzkChat : MonoBehaviour
 
     void Update()
     {
-        if(count != User.Count)
+        if(count < User.Count)
         {
             userBox.GetComponent<User>().profile = p[User.Count - 1];
             GameObject Box = Instantiate(userBox);
             Box.transform.SetParent(GameObject.Find("Content").transform);
+
+            count = User.Count;
         }
-        count = User.Count;
     }
 
     void OnApplicationQuit()
