@@ -218,9 +218,12 @@ public class ChzzkChat : MonoBehaviour
     {
         if(count < User.Count)
         {
-            userBox.GetComponent<User>().profile = p[User.Count - 1];
-            GameObject Box = Instantiate(userBox);
-            Box.transform.SetParent(GameObject.Find("Content").transform);
+            for (int i = User.Count - count; i > 0; i--)
+            {
+                userBox.GetComponent<User>().profile = p[User.Count - i];
+                GameObject Box = Instantiate(userBox);
+                Box.transform.SetParent(GameObject.Find("Content").transform);
+            }
 
             count = User.Count;
         }
