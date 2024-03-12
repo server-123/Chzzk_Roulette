@@ -187,7 +187,38 @@ public class ChzzkChat : MonoBehaviour
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
-    
+
+    void Awake()
+    {
+        if (PlayerPrefs.HasKey("Cid"))
+        {
+            channelId = PlayerPrefs.GetString("Cid");
+            ChzzkConnect();
+        }
+    }
+
+    void Update()
+    {
+        if (count < User.Count)
+        {
+            for (int i = User.Count - count; i > 0; i--)
+            {
+                userBox.GetComponent<User>().profile = p[User.Count - i];
+                GameObject Box = Instantiate(userBox);
+                Box.transform.SetParent(GameObject.Find("Content").transform);
+            }
+
+            count = User.Count;
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        if (!stopConnect) PlayerPrefs.SetString("Cid", channelId);
+        else PlayerPrefs.DeleteKey("Cid");
+        Disconncect();
+    }
+
     public void SetRoulette()
     {
         roulette = true;
@@ -212,26 +243,6 @@ public class ChzzkChat : MonoBehaviour
         p = new List<Profile>();
         User = new List<string>();
         count = 0;
-    }
-
-    void Update()
-    {
-        if(count < User.Count)
-        {
-            for (int i = User.Count - count; i > 0; i--)
-            {
-                userBox.GetComponent<User>().profile = p[User.Count - i];
-                GameObject Box = Instantiate(userBox);
-                Box.transform.SetParent(GameObject.Find("Content").transform);
-            }
-
-            count = User.Count;
-        }
-    }
-
-    void OnApplicationQuit()
-    {
-        Disconncect();
     }
 
     public void ChzzkConnect()
