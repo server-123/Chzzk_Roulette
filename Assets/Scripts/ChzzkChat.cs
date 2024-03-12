@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using WebSocketSharp;
 
 [System.Serializable]
@@ -179,11 +178,16 @@ public class ChzzkChat : MonoBehaviour
     public GameObject userBox;
     public List<Profile> p;
     public List<string> User;
+    public List<bool> sub;
+    public List<bool> exclude;
+    public List<bool> possible;
     public bool collecting = false;
     public bool roulette = false;
     public bool vote = false;
     public bool subOnly = false;
     int count;
+
+    public InputField IdField;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
@@ -193,6 +197,7 @@ public class ChzzkChat : MonoBehaviour
         if (PlayerPrefs.HasKey("Cid"))
         {
             channelId = PlayerPrefs.GetString("Cid");
+            IdField.text = channelId;
             ChzzkConnect();
         }
     }
@@ -203,6 +208,7 @@ public class ChzzkChat : MonoBehaviour
         {
             for (int i = User.Count - count; i > 0; i--)
             {
+                userBox.GetComponent<User>().index = User.Count - i;
                 userBox.GetComponent<User>().profile = p[User.Count - i];
                 GameObject Box = Instantiate(userBox);
                 Box.transform.SetParent(GameObject.Find("Content").transform);
@@ -236,20 +242,52 @@ public class ChzzkChat : MonoBehaviour
         roulette = false;
         vote = false;
         collecting = false;
+        InitializeUser();
     }
 
     public void InitializeUser()
     {
         p = new List<Profile>();
         User = new List<string>();
+        sub = new List<bool>();
+        exclude = new List<bool>();
+        possible = new List<bool>();
         count = 0;
+    }
+
+    public string Roulette()
+    {
+        if (!possible.Contains(true)) return "";
+
+        int i = 0;
+        if (subOnly)
+        {
+            if (!possible.Contains(true)) return "";
+            else{
+                i = UnityEngine.Random.Range(0, User.Count);
+                while (!possible[i])
+                {
+                    i = UnityEngine.Random.Range(0, User.Count);
+                }
+             }
+        }
+        else
+        {
+            i = UnityEngine.Random.Range(0, User.Count);
+            while (!possible[i])
+            {
+                i = UnityEngine.Random.Range(0, User.Count);
+            }
+        }
+
+        exclude[i] = true;
+        return User[i];
     }
 
     public void ChzzkConnect()
     {
         channelName = "";
         InitializeUser();
-        stopConnect = false;
         StartCoroutine(GetChannel());
     }
 
@@ -315,7 +353,7 @@ public class ChzzkChat : MonoBehaviour
                 chat = JsonUtility.FromJson<chat>(www.downloadHandler.text);
                 accessToken = chat.content.accessToken;
 
-                if (!stopConnect) Connect();
+                Connect();
             }
             else Debug.Log(www.error);
         }
@@ -369,6 +407,9 @@ public class ChzzkChat : MonoBehaviour
                     {
                         p.Add(profile);
                         User.Add(profile.nickname);
+                        sub.Add(profile.streamingProperty.subscription.tier != 0);
+                        exclude.Add(false);
+                        possible.Add(false);
                     }
                 }
                 break;
@@ -381,6 +422,7 @@ public class ChzzkChat : MonoBehaviour
     void ws_OnOpen(object sender, EventArgs e)
     {
         Debug.Log("open");
+        stopConnect = false;
         StartCoroutine(HeartBeat());
     }
 

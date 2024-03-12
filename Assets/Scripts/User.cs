@@ -1,37 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Build.Content;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class User : MonoBehaviour
 {
+    public int index;
     public Profile profile = new Profile();
-    public bool sub = false;
-    public bool exclude = false;
 
     public Text text;
 
-    ChzzkChat chz;
+    public ChzzkChat chz;
 
-    void Start()
+    void Awake()
     {
         chz = GameObject.Find("Manager").GetComponent<ChzzkChat>();
         text.text = profile.nickname;
-        sub = (profile.streamingProperty.subscription.tier != 0);
     }
 
     void Update()
     {
-        if (exclude)
+        if (!chz.User.Contains(profile.nickname))
         {
-            text.color = new Color32(63, 63, 63, 255);
+            Destroy(this.gameObject);
         }
         else
         {
-            text.color = new Color32(223, 226, 234, 255);
-        }
+            if (chz.exclude[index])
+            {
+                chz.possible[index] = false;
+            }
+            else
+            {
+                if (chz.subOnly)
+                {
+                    if(chz.sub[index]) chz.possible[index] = true;
+                    else chz.possible[index] = false;
+                }
+                else chz.possible[index] = true;
+            }
 
-        if (!chz.User.Contains(profile.nickname)) Destroy(this.gameObject);
+            if (chz.possible[index]) text.color = new Color32(223, 226, 234, 255);
+            else text.color = new Color32(63, 63, 63, 255);
+        }
     }
 }
