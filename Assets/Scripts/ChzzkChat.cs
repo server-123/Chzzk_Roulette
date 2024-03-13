@@ -189,6 +189,13 @@ public class ChzzkChat : MonoBehaviour
 
     public InputField IdField;
 
+    public string winner = "";
+    public bool chatOn = false;
+    public List<string> chatMsg;
+    public int msgCount = 0;
+    public GameObject msg;
+
+
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
 
@@ -215,6 +222,18 @@ public class ChzzkChat : MonoBehaviour
             }
 
             count = User.Count;
+        }
+
+        if (msgCount < chatMsg.Count)
+        {
+            for (int i = chatMsg.Count - msgCount; i > 0; i--)
+            {
+                msg.GetComponent<Text>().text = chatMsg[chatMsg.Count - i];
+                GameObject chat = Instantiate(msg);
+                chat.transform.SetParent(GameObject.Find("Chat Content").transform);
+            }
+
+            msgCount = chatMsg.Count;
         }
     }
 
@@ -243,6 +262,7 @@ public class ChzzkChat : MonoBehaviour
         vote = false;
         collecting = false;
         InitializeUser();
+        InitializeChat();
     }
 
     public void InitializeUser()
@@ -253,6 +273,14 @@ public class ChzzkChat : MonoBehaviour
         exclude = new List<bool>();
         possible = new List<bool>();
         count = 0;
+    }
+
+    public void InitializeChat()
+    {
+        chatMsg = new List<string>();
+        msgCount = 0;
+        winner = "";
+        chatOn = false;
     }
 
     public int Roulette()
@@ -408,6 +436,11 @@ public class ChzzkChat : MonoBehaviour
                         sub.Add(profile.streamingProperty.subscription.tier != 0);
                         exclude.Add(false);
                         possible.Add(false);
+                    }
+
+                    if(chatOn && profile.nickname == winner)
+                    {
+                        chatMsg.Add(d.bdy[i].msg);
                     }
                 }
                 break;
