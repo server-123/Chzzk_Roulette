@@ -255,14 +255,14 @@ public class ChzzkChat : MonoBehaviour
         count = 0;
     }
 
-    public string Roulette()
+    public int Roulette()
     {
-        if (!possible.Contains(true)) return "";
+        if (!possible.Contains(true)) return -1;
 
         int i = 0;
         if (subOnly)
         {
-            if (!possible.Contains(true)) return "";
+            if (!possible.Contains(true)) return -1;
             else{
                 i = UnityEngine.Random.Range(0, User.Count);
                 while (!possible[i])
@@ -279,9 +279,7 @@ public class ChzzkChat : MonoBehaviour
                 i = UnityEngine.Random.Range(0, User.Count);
             }
         }
-
-        exclude[i] = true;
-        return User[i];
+        return i;
     }
 
     public void ChzzkConnect()
