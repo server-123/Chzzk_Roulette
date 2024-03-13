@@ -810,9 +810,9 @@ namespace Unity.VisualScripting.Generated.Aot
 	// ChzzkChat.channelName
 	// ChzzkChat.User
 	// string.Format
-	// UnityEngine.UI.Image.color
-	// ChzzkChat.subOnly
 	// UnityEngine.RectTransform.anchoredPosition
+	// ChzzkChat.subOnly
+	// UnityEngine.UI.Image.color
 	// UnityEngine.GameObject.SetActive
 	// ChzzkChat.Roulette
 	// ChzzkChat.collecting
@@ -823,9 +823,9 @@ namespace Unity.VisualScripting.Generated.Aot
 	// ChzzkChat.ChzzkConnect
 	// UnityEngine.Vector2..ctor
 	// UnityEngine.Vector3.y
+	// ChzzkChat.winner
 	// ChzzkChat.chatOn
 	// ChzzkChat.InitializeChat
-	// ChzzkChat.winner
 	[UnityEngine.Scripting.PreserveAttribute()]
 	public class AotStubs
 	{
@@ -10090,16 +10090,16 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// UnityEngine.UI.Image.color
+		// UnityEngine.RectTransform.anchoredPosition
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void UnityEngine_UI_Image_color()
+		public static void UnityEngine_RectTransform_anchoredPosition()
 		{
-			global::UnityEngine.UI.Graphic target = default(global::UnityEngine.UI.Graphic);
-			global::UnityEngine.Color accessor = target.color;
-			target.color = default(global::UnityEngine.Color);
-			global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.UI.Graphic, UnityEngine.Color> optimized = new global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.UI.Graphic, UnityEngine.Color>(default(global::System.Reflection.PropertyInfo));
-			optimized.GetValue(default(global::UnityEngine.UI.Graphic));
-			optimized.SetValue(default(global::UnityEngine.UI.Graphic), default(global::UnityEngine.Color));
+			global::UnityEngine.RectTransform target = default(global::UnityEngine.RectTransform);
+			global::UnityEngine.Vector2 accessor = target.anchoredPosition;
+			target.anchoredPosition = default(global::UnityEngine.Vector2);
+			global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.RectTransform, UnityEngine.Vector2> optimized = new global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.RectTransform, UnityEngine.Vector2>(default(global::System.Reflection.PropertyInfo));
+			optimized.GetValue(default(global::UnityEngine.RectTransform));
+			optimized.SetValue(default(global::UnityEngine.RectTransform), default(global::UnityEngine.Vector2));
 		}
 		
 		// ChzzkChat.subOnly
@@ -10114,16 +10114,16 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.SetValue(default(global::ChzzkChat), default(bool));
 		}
 		
-		// UnityEngine.RectTransform.anchoredPosition
+		// UnityEngine.UI.Image.color
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void UnityEngine_RectTransform_anchoredPosition()
+		public static void UnityEngine_UI_Image_color()
 		{
-			global::UnityEngine.RectTransform target = default(global::UnityEngine.RectTransform);
-			global::UnityEngine.Vector2 accessor = target.anchoredPosition;
-			target.anchoredPosition = default(global::UnityEngine.Vector2);
-			global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.RectTransform, UnityEngine.Vector2> optimized = new global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.RectTransform, UnityEngine.Vector2>(default(global::System.Reflection.PropertyInfo));
-			optimized.GetValue(default(global::UnityEngine.RectTransform));
-			optimized.SetValue(default(global::UnityEngine.RectTransform), default(global::UnityEngine.Vector2));
+			global::UnityEngine.UI.Graphic target = default(global::UnityEngine.UI.Graphic);
+			global::UnityEngine.Color accessor = target.color;
+			target.color = default(global::UnityEngine.Color);
+			global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.UI.Graphic, UnityEngine.Color> optimized = new global::Unity.VisualScripting.InstancePropertyAccessor<UnityEngine.UI.Graphic, UnityEngine.Color>(default(global::System.Reflection.PropertyInfo));
+			optimized.GetValue(default(global::UnityEngine.UI.Graphic));
+			optimized.SetValue(default(global::UnityEngine.UI.Graphic), default(global::UnityEngine.Color));
 		}
 		
 		// UnityEngine.GameObject.SetActive
@@ -10239,6 +10239,18 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.SetValue(default(global::UnityEngine.Vector3), default(float));
 		}
 		
+		// ChzzkChat.winner
+		[global::UnityEngine.Scripting.PreserveAttribute()]
+		public static void ChzzkChat_winner()
+		{
+			global::ChzzkChat target = default(global::ChzzkChat);
+			string accessor = target.winner;
+			target.winner = default(string);
+			global::Unity.VisualScripting.InstanceFieldAccessor<ChzzkChat, string> optimized = new global::Unity.VisualScripting.InstanceFieldAccessor<ChzzkChat, string>(default(global::System.Reflection.FieldInfo));
+			optimized.GetValue(default(global::ChzzkChat));
+			optimized.SetValue(default(global::ChzzkChat), default(string));
+		}
+		
 		// ChzzkChat.chatOn
 		[global::UnityEngine.Scripting.PreserveAttribute()]
 		public static void ChzzkChat_chatOn()
@@ -10260,18 +10272,6 @@ namespace Unity.VisualScripting.Generated.Aot
 			global::Unity.VisualScripting.InstanceActionInvoker<ChzzkChat> optimized = new global::Unity.VisualScripting.InstanceActionInvoker<ChzzkChat>(default(global::System.Reflection.MethodInfo));
 			optimized.Invoke(default(global::ChzzkChat));
 			optimized.Invoke(default(object[]));
-		}
-		
-		// ChzzkChat.winner
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void ChzzkChat_winner()
-		{
-			global::ChzzkChat target = default(global::ChzzkChat);
-			string accessor = target.winner;
-			target.winner = default(string);
-			global::Unity.VisualScripting.InstanceFieldAccessor<ChzzkChat, string> optimized = new global::Unity.VisualScripting.InstanceFieldAccessor<ChzzkChat, string>(default(global::System.Reflection.FieldInfo));
-			optimized.GetValue(default(global::ChzzkChat));
-			optimized.SetValue(default(global::ChzzkChat), default(string));
 		}
 	}
 }
