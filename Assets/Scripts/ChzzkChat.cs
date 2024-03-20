@@ -196,7 +196,6 @@ public class ChzzkChat : MonoBehaviour
     public int msgCount = 0;
     public GameObject msg;
 
-
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
 
