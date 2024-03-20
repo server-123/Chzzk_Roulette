@@ -189,6 +189,7 @@ public class ChzzkChat : MonoBehaviour
 
     public InputField IdField;
 
+    [Header("Chat Box")]
     public string winner = "";
     public bool chatOn = false;
     public List<string> chatMsg;
