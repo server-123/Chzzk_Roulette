@@ -182,7 +182,6 @@ public class ChzzkChat : MonoBehaviour
     public List<bool> exclude;
     public List<bool> possible;
     public bool collecting = false;
-    public bool roulette = false;
     public bool vote = false;
     public bool subOnly = false;
     int count;
@@ -246,19 +245,16 @@ public class ChzzkChat : MonoBehaviour
 
     public void SetRoulette()
     {
-        roulette = true;
-        vote = false;
+        vote = false; // 나중에 Visual Scripting에서 변경하기
     }
 
     public void SetVote()
     {
-        roulette = false;
         vote = true;
     }
 
     public void Home()
     {
-        roulette = false;
         vote = false;
         collecting = false;
         InitializeUser();
@@ -429,13 +425,16 @@ public class ChzzkChat : MonoBehaviour
                 {
                     Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
 
-                    if (!User.Contains(profile.nickname) && collecting && roulette)
+                    if (!User.Contains(profile.nickname) && collecting)
                     {
                         p.Add(profile);
                         User.Add(profile.nickname);
                         sub.Add(profile.streamingProperty.subscription.tier != 0);
                         exclude.Add(false);
                         possible.Add(false);
+
+                        if (vote){
+                        }
                     }
 
                     if(chatOn && profile.nickname == winner)
