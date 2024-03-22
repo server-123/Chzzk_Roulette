@@ -175,12 +175,14 @@ public class ChzzkChat : MonoBehaviour
     WebSocket ws;
 
     [Header("Vote")]
+    public GameObject Content;
     public GameObject userBox;
     public List<Profile> p;
     public List<string> User;
     public List<bool> sub;
     public List<bool> exclude;
     public List<bool> possible;
+    public List<int> choice;
     public bool collecting = false;
     public bool vote = false;
     public bool subOnly = false;
@@ -194,6 +196,7 @@ public class ChzzkChat : MonoBehaviour
     public List<string> chatMsg;
     public int msgCount = 0;
     public GameObject msg;
+    public GameObject ChatContent;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
@@ -217,7 +220,7 @@ public class ChzzkChat : MonoBehaviour
                 userBox.GetComponent<User>().index = User.Count - i;
                 userBox.GetComponent<User>().profile = p[User.Count - i];
                 GameObject Box = Instantiate(userBox);
-                Box.transform.SetParent(GameObject.Find("Content").transform);
+                Box.transform.SetParent(Content.transform);
             }
 
             count = User.Count;
@@ -229,7 +232,7 @@ public class ChzzkChat : MonoBehaviour
             {
                 msg.GetComponent<Text>().text = chatMsg[chatMsg.Count - i];
                 GameObject chat = Instantiate(msg);
-                chat.transform.SetParent(GameObject.Find("Chat Content").transform);
+                chat.transform.SetParent(ChatContent.transform);
             }
 
             msgCount = chatMsg.Count;
@@ -245,12 +248,21 @@ public class ChzzkChat : MonoBehaviour
 
     public void SetRoulette()
     {
-        vote = false; // 나중에 Visual Scripting에서 변경하기
+        vote = false;
     }
 
     public void SetVote()
     {
         vote = true;
+    }
+
+    public void AddUser(Profile profile)
+    {
+        p.Add(profile);
+        User.Add(profile.nickname);
+        sub.Add(profile.streamingProperty.subscription.tier != 0);
+        exclude.Add(false);
+        possible.Add(false);
     }
 
     public void Home()
@@ -268,6 +280,7 @@ public class ChzzkChat : MonoBehaviour
         sub = new List<bool>();
         exclude = new List<bool>();
         possible = new List<bool>();
+        choice = new List<int>();
         count = 0;
     }
 
@@ -424,20 +437,67 @@ public class ChzzkChat : MonoBehaviour
                 for (int i = 0; i < d.bdy.Length; i++)
                 {
                     Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
+                    string msg = d.bdy[i].msg;
 
-                    if (!User.Contains(profile.nickname) && collecting)
+                    if (collecting)
                     {
-                        p.Add(profile);
-                        User.Add(profile.nickname);
-                        sub.Add(profile.streamingProperty.subscription.tier != 0);
-                        exclude.Add(false);
-                        possible.Add(false);
-
-                        if (vote){
+                        if(!User.Contains(profile.nickname) && !vote) AddUser(profile);
+                        else if (vote)
+                        {
+                            if (msg.Contains(" ") && msg.Split(" ")[0] == "!투표")
+                            {
+                                if (!User.Contains(profile.nickname))
+                                {
+                                    try
+                                    {
+                                        choice.Add(int.Parse(msg.Split(" ")[1]));
+                                        AddUser(profile);
+                                    }
+                                    catch (FormatException E)
+                                    {
+                                        Debug.LogError("FormatException: " + E.Message);
+                                    }
+                                    catch (OverflowException E)
+                                    {
+                                        Debug.LogError("OverflowException: " + E.Message);
+                                    }
+                                    catch (ArgumentNullException E)
+                                    {
+                                        Debug.LogError("ArgumentNullException: " + E.Message);
+                                    }
+                                    catch (Exception E)
+                                    {
+                                        Debug.LogError("Unexpected Exception: " + E.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        choice[User.IndexOf(profile.nickname)] = int.Parse(msg.Split(" ")[1]);
+                                    }
+                                    catch (FormatException E)
+                                    {
+                                        Debug.LogError("FormatException: " + E.Message);
+                                    }
+                                    catch (OverflowException E)
+                                    {
+                                        Debug.LogError("OverflowException: " + E.Message);
+                                    }
+                                    catch (ArgumentNullException E)
+                                    {
+                                        Debug.LogError("ArgumentNullException: " + E.Message);
+                                    }
+                                    catch (Exception E)
+                                    {
+                                        Debug.LogError("Unexpected Exception: " + E.Message);
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    if(chatOn && profile.nickname == winner)
+                    if (chatOn && profile.nickname == winner)
                     {
                         chatMsg.Add(d.bdy[i].msg);
                     }

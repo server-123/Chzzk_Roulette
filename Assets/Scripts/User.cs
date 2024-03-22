@@ -9,10 +9,12 @@ public class User : MonoBehaviour
     public Text text;
 
     public ChzzkChat chz;
+    public VoteManager vm;
 
     void Awake()
     {
         chz = GameObject.Find("Manager").GetComponent<ChzzkChat>();
+        vm = GameObject.Find("Manager").GetComponent<VoteManager>();
         text.text = profile.nickname;
     }
 
