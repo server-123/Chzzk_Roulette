@@ -12,6 +12,8 @@ public class VoteManager : MonoBehaviour
     public GameObject Item;
     public int SelectedItem;
 
+    public bool Private = false;
+
     void Update()
     {
         if (chz.vote)
@@ -26,7 +28,8 @@ public class VoteManager : MonoBehaviour
                     GameObject u = Content.transform.GetChild(i).gameObject;
                     User user = u.GetComponent<User>();
 
-                    u.SetActive(chz.choice[user.index] == SelectedItem);
+                    if (!chz.User.Contains(user.profile.nickname)) Destroy(u);
+                    else u.SetActive(chz.choice[user.index] == SelectedItem);
                 }
             }
 
@@ -41,6 +44,19 @@ public class VoteManager : MonoBehaviour
                 }
             }
             else if (voteChild == 0) NewItem();
+
+            for(int i = 0; i < chz.choice.Count; i++)
+            {
+                if (chz.choice[i] > voteChild)
+                {
+                    chz.choice.RemoveAt(i);
+                    chz.User.RemoveAt(i);
+                    chz.sub.RemoveAt(i);
+                    chz.exclude.RemoveAt(i);
+                    chz.possible.RemoveAt(i);
+                    i--;
+                }
+            }
         }
     }
 
