@@ -175,6 +175,7 @@ public class ChzzkChat : MonoBehaviour
     WebSocket ws;
 
     [Header("Vote")]
+    public VoteManager vm;
     public GameObject Content;
     public GameObject userBox;
     public List<Profile> p;
@@ -267,6 +268,7 @@ public class ChzzkChat : MonoBehaviour
 
     public void Home()
     {
+        vm.SelectedItem = 0;
         vote = false;
         collecting = false;
         InitializeUser();

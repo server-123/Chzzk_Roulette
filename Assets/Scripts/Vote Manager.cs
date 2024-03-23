@@ -29,7 +29,11 @@ public class VoteManager : MonoBehaviour
 
                     if (!chz.User.Contains(user.profile.nickname)) Destroy(u);
                     else if (SelectedItem == 0) u.SetActive(true);
-                    else u.SetActive(chz.choice[user.index] == SelectedItem);
+                    else
+                    {
+                        u.SetActive(chz.choice[user.index] == SelectedItem);
+                        if (chz.choice[user.index] != SelectedItem && SelectedItem != 0) chz.possible[user.index] = false;
+                    }
                 }
             }
 

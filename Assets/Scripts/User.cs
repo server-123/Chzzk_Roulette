@@ -31,16 +31,26 @@ public class User : MonoBehaviour
             {
                 if (chz.subOnly)
                 {
-                    if(chz.sub[index]) chz.possible[index] = true;
+                    if (chz.sub[index])
+                    {
+                        if (chz.vote)
+                        {
+                            if (chz.choice[index] != vm.SelectedItem && vm.SelectedItem != 0) chz.possible[index] = false;
+                            else chz.possible[index] = true;
+                        }
+                        else chz.possible[index] = true;
+                    }
                     else chz.possible[index] = false;
                 }
-                else chz.possible[index] = true;
-            }
-
-            if (chz.vote)
-            {
-                if (chz.choice[index] != vm.SelectedItem) chz.possible[index] = false;
-                else chz.possible[index] = true;
+                else
+                {
+                    if (chz.vote)
+                    {
+                        if (chz.choice[index] != vm.SelectedItem && vm.SelectedItem != 0) chz.possible[index] = false;
+                        else chz.possible[index] = true;
+                    }
+                    else chz.possible[index] = true;
+                }
             }
 
             if (chz.possible[index]) text.color = new Color32(223, 226, 234, 255);

@@ -21,23 +21,21 @@ public class Item : MonoBehaviour
     {
         chz = GameObject.Find("Manager").GetComponent<ChzzkChat>();
         vm = GameObject.Find("Manager").GetComponent<VoteManager>();
+
+        btn.SetActive(false);
+        field.interactable = true;
+        User.SetActive(false);
+        Per.SetActive(false);
+        PerBar.SetActive(false);
+        Panel.SetActive(false);
     }
 
     void Update()
     {
         num.text = (index + 1).ToString();
+        Panel.SetActive(vm.SelectedItem == index + 1);
 
-        if (!chz.collecting)
-        {
-            btn.SetActive(false);
-            field.interactable = true;
-            User.SetActive(false);
-            Per.SetActive(false);
-            PerBar.SetActive(false);
-            X.SetActive(true);
-            Panel.SetActive(false);
-        }
-        else
+        if (chz.collecting)
         {
             btn.SetActive(true);
             field.interactable = false;
@@ -45,7 +43,6 @@ public class Item : MonoBehaviour
             Per.SetActive(true);
             PerBar.SetActive(true);
             X.SetActive(false);
-            Panel.SetActive(vm.SelectedItem == index + 1);
 
             if (vm.Private)
             {
