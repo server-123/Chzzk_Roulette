@@ -43,34 +43,34 @@ public class Item : MonoBehaviour
             Per.SetActive(true);
             PerBar.SetActive(true);
             X.SetActive(false);
+        }
 
-            if (vm.Private)
+        if (vm.Private)
+        {
+            User.GetComponent<Text>().text = "?명";
+            Per.GetComponent<Text>().text = "?%";
+            PerBar.GetComponent<Slider>().value = 0;
+        }
+        else
+        {
+            if (chz.choice.Count != 0)
             {
-                User.GetComponent<Text>().text = "?명";
-                Per.GetComponent<Text>().text = "?%";
-                PerBar.GetComponent<Slider>().value = 0;
+                int amount = 0;
+
+                foreach (int i in chz.choice)
+                {
+                    if (i == index + 1) amount++;
+                }
+
+                User.GetComponent<Text>().text = amount.ToString() + "명";
+                Per.GetComponent<Text>().text = (((float)amount/chz.choice.Count) * 100).ToString("F1") + "%";
+                PerBar.GetComponent<Slider>().value = (float)amount/chz.choice.Count;
             }
             else
             {
-                if (chz.choice.Count != 0)
-                {
-                    int amount = 0;
-
-                    foreach (int i in chz.choice)
-                    {
-                        if (i == index + 1) amount++;
-                    }
-
-                    User.GetComponent<Text>().text = amount.ToString() + "명";
-                    Per.GetComponent<Text>().text = (((float)amount/chz.choice.Count) * 100).ToString("F1") + "%";
-                    PerBar.GetComponent<Slider>().value = (float)amount/chz.choice.Count;
-                }
-                else
-                {
-                    User.GetComponent<Text>().text = "0명";
-                    Per.GetComponent<Text>().text = "0.0%";
-                    PerBar.GetComponent<Slider>().value = 0;
-                }
+                User.GetComponent<Text>().text = "0명";
+                Per.GetComponent<Text>().text = "0.0%";
+                PerBar.GetComponent<Slider>().value = 0;
             }
         }
     }
