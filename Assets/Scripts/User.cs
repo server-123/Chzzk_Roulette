@@ -26,10 +26,7 @@ public class User : MonoBehaviour
         }
         else
         {
-            if (chz.exclude[index])
-            {
-                chz.possible[index] = false;
-            }
+            if (chz.exclude[index]) chz.possible[index] = false;
             else
             {
                 if (chz.subOnly)
@@ -37,6 +34,12 @@ public class User : MonoBehaviour
                     if(chz.sub[index]) chz.possible[index] = true;
                     else chz.possible[index] = false;
                 }
+                else chz.possible[index] = true;
+            }
+
+            if (chz.vote)
+            {
+                if (chz.choice[index] != vm.SelectedItem) chz.possible[index] = false;
                 else chz.possible[index] = true;
             }
 
