@@ -7,13 +7,14 @@ public class Item : MonoBehaviour
 {
     public int index;
     public Text num;
-    public Button btn;
+    public GameObject btn;
     public InputField field;
 
     public GameObject User;
     public GameObject Per;
     public GameObject PerBar;
     public GameObject X;
+    public GameObject Panel;
 
     public ChzzkChat chz;
     public VoteManager vm;
@@ -30,21 +31,23 @@ public class Item : MonoBehaviour
 
         if (!chz.collecting)
         {
-            btn.interactable = false;
+            btn.SetActive(false);
             field.interactable = true;
             User.SetActive(false);
             Per.SetActive(false);
             PerBar.SetActive(false);
             X.SetActive(true);
+            Panel.SetActive(false);
         }
         else
         {
-            btn.interactable = true;
+            btn.SetActive(true);
             field.interactable = false;
             User.SetActive(true);
             Per.SetActive(true);
             PerBar.SetActive(true);
             X.SetActive(false);
+            Panel.SetActive(vm.SelectedItem == index + 1);
 
             if (vm.Private)
             {
@@ -80,5 +83,11 @@ public class Item : MonoBehaviour
     public void Destroy()
     {
         Destroy(this.gameObject);
+    }
+
+    public void SetItem()
+    {
+        if (vm.SelectedItem != index + 1) vm.SelectedItem = index + 1;
+        else vm.SelectedItem = 0;
     }
 }
