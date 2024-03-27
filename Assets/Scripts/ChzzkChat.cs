@@ -160,6 +160,13 @@ public class Profile
 
 public class ChzzkChat : MonoBehaviour
 {
+    enum SslProtocolsHack
+    {
+        Tls = 192,
+        Tls11 = 768,
+        Tls12 = 3072
+    }
+
     public bool stopConnect = false;
 
     [Header("Channel Information")]
@@ -220,8 +227,7 @@ public class ChzzkChat : MonoBehaviour
             {
                 userBox.GetComponent<User>().index = User.Count - i;
                 userBox.GetComponent<User>().profile = p[User.Count - i];
-                GameObject Box = Instantiate(userBox);
-                Box.transform.SetParent(Content.transform);
+                Instantiate(userBox, Content.transform);
             }
 
             count = User.Count;
@@ -232,8 +238,7 @@ public class ChzzkChat : MonoBehaviour
             for (int i = chatMsg.Count - msgCount; i > 0; i--)
             {
                 msg.GetComponent<Text>().text = chatMsg[chatMsg.Count - i];
-                GameObject chat = Instantiate(msg);
-                chat.transform.SetParent(ChatContent.transform);
+                Instantiate(msg, ChatContent.transform);
             }
 
             msgCount = chatMsg.Count;
@@ -401,6 +406,9 @@ public class ChzzkChat : MonoBehaviour
         string msg = "{\"ver\":\"2\",\"cmd\":100,\"svcid\":\"game\",\"cid\":\"" + chatChannelId + "\",\"bdy\":{\"uid\":null,\"devType\":2001,\"accTkn\":\"" + accessToken + "\",\"auth\":\"READ\"},\"tid\":1}";
 
         ws = new WebSocket("wss://kr-ss1.chat.naver.com/chat");
+        var sslProtocolHack = (System.Security.Authentication.SslProtocols)(SslProtocolsHack.Tls12 | SslProtocolsHack.Tls11 | SslProtocolsHack.Tls);
+        ws.SslConfiguration.EnabledSslProtocols = sslProtocolHack;
+
         ws.OnMessage += ws_OnMessage;
         ws.OnOpen += ws_OnOpen;
         ws.OnClose += ws_OnClose;

@@ -103,7 +103,6 @@ public class VoteManager : MonoBehaviour
             }
         }
 
-        GameObject item = Instantiate(Item);
-        item.transform.SetParent(VoteContent.transform);
+        Instantiate(Item, VoteContent.transform);
     }
 }
