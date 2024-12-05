@@ -16,11 +16,13 @@ public class Item : MonoBehaviour
 
     public ChzzkChat chz;
     public VoteManager vm;
+    public DRouletteManager dm;
 
     void Awake()
     {
         chz = GameObject.Find("Manager").GetComponent<ChzzkChat>();
         vm = GameObject.Find("Manager").GetComponent<VoteManager>();
+        dm = GameObject.Find("Manager").GetComponent<DRouletteManager>();
 
         btn.SetActive(false);
         field.interactable = true;
