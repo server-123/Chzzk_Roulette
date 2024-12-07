@@ -206,6 +206,9 @@ public class ChzzkChat : MonoBehaviour
     public GameObject msg;
     public GameObject ChatContent;
 
+    [Header("DR")]
+    public bool DR = false;
+
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
 
@@ -255,11 +258,19 @@ public class ChzzkChat : MonoBehaviour
     public void SetRoulette()
     {
         vote = false;
+        DR = false;
     }
 
     public void SetVote()
     {
         vote = true;
+        DR = false;
+    }
+
+    public void SetDR()
+    {
+        vote = false;
+        DR = true;
     }
 
     public void AddUser(Profile profile)
@@ -275,6 +286,7 @@ public class ChzzkChat : MonoBehaviour
     {
         vm.SelectedItem = 0;
         vote = false;
+        DR = false;
         collecting = false;
         InitializeUser();
         InitializeChat();

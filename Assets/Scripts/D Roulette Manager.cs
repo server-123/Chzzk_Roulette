@@ -15,7 +15,7 @@ public class DRouletteManager : MonoBehaviour
 
     void Update()
     {
-        if (chz.vote)
+        if (chz.DR)
         {
             int child = Content.transform.childCount;
             int voteChild = DContent.transform.childCount;
