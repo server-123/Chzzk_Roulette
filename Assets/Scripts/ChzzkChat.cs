@@ -158,6 +158,32 @@ public class Profile
     }
 }
 
+[System.Serializable]
+public class Donation
+{
+    public string emojis;
+    public bool isAnonymous;
+    public string payType;
+    public int payAmount;
+    public string streamingChannelId;
+    public string nickname;
+    public string osType;
+    public string donationType;
+    public donationRank[] weeklyRankList;
+    public donationRank donationUserWeeklyRank;
+    public string chatType;
+
+    [System.Serializable]
+    public class donationRank
+    {
+        public string userIdHash;
+        public string nickName;
+        public bool verifiedMark;
+        public int donationAmount;
+        public int ranking;
+    }
+}
+
 public class ChzzkChat : MonoBehaviour
 {
     enum SslProtocolsHack
@@ -208,6 +234,7 @@ public class ChzzkChat : MonoBehaviour
 
     [Header("DR")]
     public bool DR = false;
+    Queue<Donation> donation;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
@@ -220,6 +247,12 @@ public class ChzzkChat : MonoBehaviour
             IdField.text = channelId;
             ChzzkConnect();
         }
+    }
+
+    void Start()
+    {
+        Home();
+        donation = new Queue<Donation>();
     }
 
     void Update()
@@ -338,6 +371,25 @@ public class ChzzkChat : MonoBehaviour
         return i;
     }
 
+    public void donationEnqueue(Donation d)
+    {
+        donation.Enqueue(d);
+    }
+
+    public Donation donationPeek()
+    {
+        if (donation.Count != 0)
+        {
+            Donation peek = donation.Peek();
+            donation.Dequeue();
+            return peek;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public void ChzzkConnect()
     {
         channelName = "";
@@ -351,7 +403,7 @@ public class ChzzkChat : MonoBehaviour
         {
             yield return new WaitForSecondsRealtime(15f);
 
-            if (ws != null && ws.IsAlive)
+            if (ws != null)
             {
                 ws.Send(heartbeatRequest);
             }
@@ -456,14 +508,14 @@ public class ChzzkChat : MonoBehaviour
                 ws.Send(heartbeatResponse);
                 break;
             case 93101:
-                for (int i = 0; i < d.bdy.Length; i++)
+                if (collecting)
                 {
-                    Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
-                    string msg = d.bdy[i].msg;
-
-                    if (collecting)
+                    for (int i = 0; i < d.bdy.Length; i++)
                     {
-                        if(!User.Contains(profile.nickname) && !vote) AddUser(profile);
+                        Profile profile = JsonUtility.FromJson<Profile>(d.bdy[i].profile);
+                        string msg = d.bdy[i].msg;
+
+                        if (!User.Contains(profile.nickname) && !vote) AddUser(profile);
                         else if (vote)
                         {
                             if (msg.Contains(" ") && msg.Split(" ")[0] == "!투표")
@@ -517,15 +569,23 @@ public class ChzzkChat : MonoBehaviour
                                 }
                             }
                         }
-                    }
 
-                    if (chatOn && profile.nickname == winner)
-                    {
-                        chatMsg.Add(d.bdy[i].msg);
+                        if (chatOn && profile.nickname == winner)
+                        {
+                            chatMsg.Add(d.bdy[i].msg);
+                        }
                     }
                 }
                 break;
             case 93102:
+                if (DR && collecting)
+                {
+                    for (int i = 0; i < d.bdy.Length; i++)
+                    {
+                        donation.Enqueue(JsonUtility.FromJson<Donation>(d.bdy[i].extras));
+                    }
+                }
+                break;
             default:
                 break;
         }

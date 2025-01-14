@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,41 +6,27 @@ public class DRouletteManager : MonoBehaviour
 {
     public ChzzkChat chz;
 
-    public GameObject Content;
     public GameObject DContent;
-    public Button Start;
+    public Button start;
 
     public GameObject Item;
     public int SelectedItem;
     public bool Private = false;
 
+    public int price;
+    public bool isRolling;
+
     void Update()
     {
+        donationProccess();
+
         if (chz.DR)
         {
-            int child = Content.transform.childCount;
-            int voteChild = DContent.transform.childCount;
+            int Child = DContent.transform.childCount;
 
-            if (child > 0)
+            if (Child > 0)
             {
-                for (int i = 0; i < child; i++)
-                {
-                    GameObject u = Content.transform.GetChild(i).gameObject;
-                    User user = u.GetComponent<User>();
-
-                    if (!chz.User.Contains(user.profile.nickname)) Destroy(u);
-                    else if (SelectedItem == 0) u.SetActive(true);
-                    else
-                    {
-                        u.SetActive(chz.choice[user.index] == SelectedItem);
-                        if (chz.choice[user.index] != SelectedItem && SelectedItem != 0) chz.possible[user.index] = false;
-                    }
-                }
-            }
-
-            if (voteChild > 0)
-            {
-                for (int i = 0; i < voteChild; i++)
+                for (int i = 0; i < Child; i++)
                 {
                     GameObject it = DContent.transform.GetChild(i).gameObject;
                     Item item = it.GetComponent<Item>();
@@ -47,36 +34,23 @@ public class DRouletteManager : MonoBehaviour
                     item.index = i;
                 }
             }
-            else if (voteChild == 0) NewItem();
+            else if (Child == 0) NewItem();
 
-            if (voteChild == 1) Start.interactable = false;
+            if (Child == 1) start.interactable = false;
             else
             {
-                Start.interactable = true;
-            }
-
-            for (int i = 0; i < chz.choice.Count; i++)
-            {
-                if (chz.choice[i] > voteChild || chz.choice[i] < 1)
-                {
-                    chz.choice.RemoveAt(i);
-                    chz.User.RemoveAt(i);
-                    chz.sub.RemoveAt(i);
-                    chz.exclude.RemoveAt(i);
-                    chz.possible.RemoveAt(i);
-                    i--;
-                }
+                start.interactable = true;
             }
         }
         else
         {
-            Start.interactable = true;
+            start.interactable = true;
 
-            int voteChild = DContent.transform.childCount;
+            int Child = DContent.transform.childCount;
 
-            if (voteChild > 0)
+            if (Child > 0)
             {
-                for (int i = 0; i < voteChild; i++)
+                for (int i = 0; i < Child; i++)
                 {
                     Destroy(DContent.transform.GetChild(i).gameObject);
                 }
@@ -86,23 +60,42 @@ public class DRouletteManager : MonoBehaviour
 
     public void NewItem()
     {
-        int voteChild = DContent.transform.childCount;
+        int Child = DContent.transform.childCount;
 
-        if (voteChild > 0)
+        if (Child > 0)
         {
-            for (int i = 0; i < voteChild; i++)
+            for (int i = 0; i < Child; i++)
             {
                 GameObject it = DContent.transform.GetChild(i).gameObject;
                 Item items = it.GetComponent<Item>();
 
                 if (items.field.text == "")
                 {
-                    if (items.index + 1 < voteChild) Destroy(it);
+                    if (items.index + 1 < Child) Destroy(it);
                     return;
                 }
             }
         }
 
         Instantiate(Item, DContent.transform);
+    }
+
+    void donationProccess()
+    {
+        if (!isRolling)
+        {
+            Donation peek = chz.donationPeek();
+
+            if (peek != null)
+            {
+                if (peek.payAmount == price)
+                {
+                    string nickname = "익명의 후원자";
+                    if (peek.nickname != null) nickname = peek.nickname;
+
+                    Debug.Log($"{nickname} 님이 {string.Format("{0:n0}", price)}원 후원\n");
+                }
+            }
+        }
     }
 }
