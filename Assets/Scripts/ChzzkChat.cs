@@ -508,7 +508,7 @@ public class ChzzkChat : MonoBehaviour
                 ws.Send(heartbeatResponse);
                 break;
             case 93101:
-                if (collecting)
+                if (collecting && !DR)
                 {
                     for (int i = 0; i < d.bdy.Length; i++)
                     {
