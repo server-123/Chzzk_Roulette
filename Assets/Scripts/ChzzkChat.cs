@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -184,6 +185,12 @@ public class Donation
     }
 }
 
+[Serializable]
+public class DonationListWrapper
+{
+    public List<Donation> Donations = new List<Donation>();
+}
+
 public class ChzzkChat : MonoBehaviour
 {
     enum SslProtocolsHack
@@ -236,10 +243,12 @@ public class ChzzkChat : MonoBehaviour
 
     [Header("DR")]
     public bool DR = false;
-    Queue<Donation> donation;
+    public List<Donation> donation;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
+
+    string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "record.json");//Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "record.json");
 
     void Awake()
     {
@@ -249,12 +258,15 @@ public class ChzzkChat : MonoBehaviour
             IdField.text = channelId;
             ChzzkConnect();
         }
+
+        if (DRLoad(filePath) == null) InitializeDR();
+        else donation = DRLoad(filePath);
     }
 
     void Start()
     {
+        Debug.Log(filePath);
         Home();
-        donation = new Queue<Donation>();
     }
 
     void Update()
@@ -285,6 +297,7 @@ public class ChzzkChat : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        DRSave(filePath, donation);
         if (!stopConnect) PlayerPrefs.SetString("Cid", channelId);
         else PlayerPrefs.DeleteKey("Cid");
         Disconncect();
@@ -347,6 +360,11 @@ public class ChzzkChat : MonoBehaviour
         chatOn = false;
     }
 
+    public void InitializeDR()
+    {
+        donation = new List<Donation>();
+    }
+
     public int Roulette()
     {
         if (!possible.Contains(true)) return -1;
@@ -372,25 +390,6 @@ public class ChzzkChat : MonoBehaviour
             }
         }
         return i;
-    }
-
-    public void donationEnqueue(Donation d)
-    {
-        donation.Enqueue(d);
-    }
-
-    public Donation donationPeek()
-    {
-        if (donation.Count != 0)
-        {
-            Donation peek = donation.Peek();
-            donation.Dequeue();
-            return peek;
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public void ChzzkConnect()
@@ -585,7 +584,7 @@ public class ChzzkChat : MonoBehaviour
                 {
                     for (int i = 0; i < d.bdy.Length; i++)
                     {
-                        donation.Enqueue(JsonUtility.FromJson<Donation>(d.bdy[i].extras));
+                        donation.Add(JsonUtility.FromJson<Donation>(d.bdy[i].extras));
                     }
                 }
                 break;
@@ -604,5 +603,44 @@ public class ChzzkChat : MonoBehaviour
     void ws_OnClose(object sender, CloseEventArgs e)
     {
         if (!stopConnect) Connect();
+    }
+
+    public void DRSave(string _filePath, List<Donation> data)
+    {
+        try
+        {
+            DonationListWrapper wrapper = new DonationListWrapper { Donations = data };
+            string jsonData = JsonUtility.ToJson(wrapper, true);
+
+            File.WriteAllText(_filePath, jsonData);
+            Debug.Log($"파일 저장 성공: {_filePath}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"저장 중 오류 발생: {e.Message}");
+        }
+    }
+
+    public List<Donation> DRLoad(string _filePath)
+    {
+        try
+        {
+            if (!File.Exists(_filePath))
+            {
+                Debug.LogWarning("파일을 찾을 수 없습니다.");
+                return null;
+            }
+
+            string jsonData = File.ReadAllText(_filePath);
+            DonationListWrapper wrapper = JsonUtility.FromJson<DonationListWrapper>(jsonData);
+
+            Debug.Log("파일 불러오기 성공");
+            return wrapper.Donations;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"불러오는 중 오류 발생: {e.Message}");
+            return null;
+        }
     }
 }

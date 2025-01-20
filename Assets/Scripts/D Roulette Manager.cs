@@ -18,7 +18,7 @@ public class DRouletteManager : MonoBehaviour
 
     void Update()
     {
-        donationProccess();
+        //donationProccess();
 
         if (chz.DR)
         {
@@ -78,11 +78,11 @@ public class DRouletteManager : MonoBehaviour
         Instantiate(Item, DContent.transform);
     }
 
-    void donationProccess()
+    /*void donationProccess()
     {
         if (!isRolling)
         {
-            Donation peek = chz.donationPeek();
+            Donation peek = chz.donation[0];
 
             if (peek != null)
             {
@@ -95,5 +95,5 @@ public class DRouletteManager : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 }
