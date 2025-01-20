@@ -13,12 +13,13 @@ public class DRouletteManager : MonoBehaviour
     public int SelectedItem;
     public bool Private = false;
 
-    public int price;
+    public int price = 2000;
     public bool isRolling;
+    public int currentIndex = 0;
 
     void Update()
     {
-        //donationProccess();
+        donationProccess();
 
         if (chz.DR)
         {
@@ -78,22 +79,22 @@ public class DRouletteManager : MonoBehaviour
         Instantiate(Item, DContent.transform);
     }
 
-    /*void donationProccess()
+    void donationProccess()
     {
         if (!isRolling)
         {
-            Donation peek = chz.donation[0];
+            Donation donation;
+            if (currentIndex < chz.donation.Count) donation = chz.donation[currentIndex];
+            else donation = null;
 
-            if (peek != null)
+            if (donation != null)
             {
-                if (peek.payAmount == price)
-                {
-                    string nickname = "익명의 후원자";
-                    if (peek.nickname != null) nickname = peek.nickname;
+                string nickname = "익명의 후원자";
+                if (donation.nickname != null) nickname = donation.nickname;
 
-                    Debug.Log($"{nickname} 님이 {string.Format("{0:n0}", price)}원 후원\n");
-                }
+                Debug.Log($"{nickname} 님이 {string.Format("{0:n0}", price)}원 후원\n");
+                currentIndex++;
             }
         }
-    }*/
+    }
 }

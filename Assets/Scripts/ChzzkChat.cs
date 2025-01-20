@@ -244,6 +244,7 @@ public class ChzzkChat : MonoBehaviour
     [Header("DR")]
     public bool DR = false;
     public List<Donation> donation;
+    public DRouletteManager drm;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
     string heartbeatResponse = "{\"ver\":\"2\",\"cmd\":10000}";
@@ -259,13 +260,13 @@ public class ChzzkChat : MonoBehaviour
             ChzzkConnect();
         }
 
+        if (PlayerPrefs.HasKey("drIndex")) drm.currentIndex = PlayerPrefs.GetInt("drIndex");
         if (DRLoad(filePath) == null) InitializeDR();
         else donation = DRLoad(filePath);
     }
 
     void Start()
     {
-        Debug.Log(filePath);
         Home();
     }
 
@@ -298,6 +299,7 @@ public class ChzzkChat : MonoBehaviour
     void OnApplicationQuit()
     {
         DRSave(filePath, donation);
+        PlayerPrefs.SetInt("drIndex", drm.currentIndex);
         if (!stopConnect) PlayerPrefs.SetString("Cid", channelId);
         else PlayerPrefs.DeleteKey("Cid");
         Disconncect();
@@ -363,6 +365,8 @@ public class ChzzkChat : MonoBehaviour
     public void InitializeDR()
     {
         donation = new List<Donation>();
+        drm.currentIndex = 0;
+        if(PlayerPrefs.HasKey("drIndex")) PlayerPrefs.DeleteKey("drIndex");
     }
 
     public int Roulette()
@@ -584,7 +588,8 @@ public class ChzzkChat : MonoBehaviour
                 {
                     for (int i = 0; i < d.bdy.Length; i++)
                     {
-                        donation.Add(JsonUtility.FromJson<Donation>(d.bdy[i].extras));
+                        Donation data = JsonUtility.FromJson<Donation>(d.bdy[i].extras);
+                        if(data.payAmount == drm.price) donation.Add(data);
                     }
                 }
                 break;
@@ -613,11 +618,10 @@ public class ChzzkChat : MonoBehaviour
             string jsonData = JsonUtility.ToJson(wrapper, true);
 
             File.WriteAllText(_filePath, jsonData);
-            Debug.Log($"파일 저장 성공: {_filePath}");
         }
         catch (Exception e)
         {
-            Debug.LogError($"저장 중 오류 발생: {e.Message}");
+            Debug.LogError(e.Message);
         }
     }
 
@@ -625,21 +629,16 @@ public class ChzzkChat : MonoBehaviour
     {
         try
         {
-            if (!File.Exists(_filePath))
-            {
-                Debug.LogWarning("파일을 찾을 수 없습니다.");
-                return null;
-            }
+            if (!File.Exists(_filePath)) return null;
 
             string jsonData = File.ReadAllText(_filePath);
             DonationListWrapper wrapper = JsonUtility.FromJson<DonationListWrapper>(jsonData);
 
-            Debug.Log("파일 불러오기 성공");
             return wrapper.Donations;
         }
         catch (Exception e)
         {
-            Debug.LogError($"불러오는 중 오류 발생: {e.Message}");
+            Debug.LogError(e.Message);
             return null;
         }
     }
