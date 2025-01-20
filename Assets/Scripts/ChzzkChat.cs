@@ -207,6 +207,8 @@ public class ChzzkChat : MonoBehaviour
 
     WebSocket ws;
 
+    public Button start;
+
     [Header("Vote")]
     public VoteManager vm;
     public GameObject Content;
@@ -317,6 +319,7 @@ public class ChzzkChat : MonoBehaviour
 
     public void Home()
     {
+        start.interactable = true;
         vm.SelectedItem = 0;
         vote = false;
         DR = false;

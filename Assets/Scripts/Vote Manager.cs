@@ -49,7 +49,7 @@ public class VoteManager : MonoBehaviour
             }
             else if (voteChild == 0) NewItem();
 
-            if(voteChild == 1) Start.interactable = false;
+            if(voteChild <= 2) Start.interactable = false;
             else
             {
                 Start.interactable = true;
@@ -70,8 +70,6 @@ public class VoteManager : MonoBehaviour
         }
         else
         {
-            Start.interactable = true;
-
             int voteChild = VoteContent.transform.childCount;
 
             if (voteChild > 0)

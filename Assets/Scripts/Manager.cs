@@ -6,6 +6,7 @@ public class Manager : MonoBehaviour
 
     void Start()
     {
+        //Display.displays[1].Activate();
         chz = GetComponent<ChzzkChat>();
     }
 

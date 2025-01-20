@@ -36,7 +36,7 @@ public class DRouletteManager : MonoBehaviour
             }
             else if (Child == 0) NewItem();
 
-            if (Child == 1) start.interactable = false;
+            if (Child <= 2) start.interactable = false;
             else
             {
                 start.interactable = true;
@@ -44,8 +44,6 @@ public class DRouletteManager : MonoBehaviour
         }
         else
         {
-            start.interactable = true;
-
             int Child = DContent.transform.childCount;
 
             if (Child > 0)
