@@ -8,11 +8,9 @@ public class DRouletteManager : MonoBehaviour
 
     public GameObject DContent;
     public Button start;
-
     public GameObject Item;
-    public int SelectedItem;
-    public bool Private = false;
 
+    public List<DonationRecord> donation;
     public int price = 2000;
     public bool isRolling;
     public int currentIndex = 0;
@@ -83,16 +81,10 @@ public class DRouletteManager : MonoBehaviour
     {
         if (!isRolling)
         {
-            Donation donation;
-            if (currentIndex < chz.donation.Count) donation = chz.donation[currentIndex];
-            else donation = null;
-
-            if (donation != null)
+            if (currentIndex < donation.Count)
             {
-                string nickname = "익명의 후원자";
-                if (donation.nickname != null) nickname = donation.nickname;
-
-                Debug.Log($"{nickname} 님이 {string.Format("{0:n0}", price)}원 후원\n");
+                if(donation[currentIndex].reward == -1) donation[currentIndex].reward = Random.Range(0, DContent.transform.childCount);
+                Debug.Log($"{donation[currentIndex].nickName} 님이 {string.Format("{0:n0}", price)}원 후원\n");
                 currentIndex++;
             }
         }

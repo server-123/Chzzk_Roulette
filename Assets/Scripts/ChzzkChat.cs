@@ -186,9 +186,16 @@ public class Donation
 }
 
 [Serializable]
+public class DonationRecord
+{
+    public string nickName;
+    public int reward;
+}
+
+[Serializable]
 public class DonationListWrapper
 {
-    public List<Donation> Donations = new List<Donation>();
+    public List<DonationRecord> Donations = new List<DonationRecord>();
 }
 
 public class ChzzkChat : MonoBehaviour
@@ -243,7 +250,6 @@ public class ChzzkChat : MonoBehaviour
 
     [Header("DR")]
     public bool DR = false;
-    public List<Donation> donation;
     public DRouletteManager drm;
 
     string heartbeatRequest = "{\"ver\":\"2\",\"cmd\":0}";
@@ -261,8 +267,9 @@ public class ChzzkChat : MonoBehaviour
         }
 
         if (PlayerPrefs.HasKey("drIndex")) drm.currentIndex = PlayerPrefs.GetInt("drIndex");
+        if (PlayerPrefs.HasKey("price")) drm.price = PlayerPrefs.GetInt("price");
         if (DRLoad(filePath) == null) InitializeDR();
-        else donation = DRLoad(filePath);
+        else drm.donation = DRLoad(filePath);
     }
 
     void Start()
@@ -298,8 +305,9 @@ public class ChzzkChat : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        DRSave(filePath, donation);
+        DRSave(filePath, drm.donation);
         PlayerPrefs.SetInt("drIndex", drm.currentIndex);
+        PlayerPrefs.SetInt("price", drm.price);
         if (!stopConnect) PlayerPrefs.SetString("Cid", channelId);
         else PlayerPrefs.DeleteKey("Cid");
         Disconncect();
@@ -364,9 +372,11 @@ public class ChzzkChat : MonoBehaviour
 
     public void InitializeDR()
     {
-        donation = new List<Donation>();
+        drm.donation = new List<DonationRecord>();
+        DRSave(filePath, drm.donation);
         drm.currentIndex = 0;
         if(PlayerPrefs.HasKey("drIndex")) PlayerPrefs.DeleteKey("drIndex");
+        if (PlayerPrefs.HasKey("price")) PlayerPrefs.DeleteKey("price");
     }
 
     public int Roulette()
@@ -589,7 +599,9 @@ public class ChzzkChat : MonoBehaviour
                     for (int i = 0; i < d.bdy.Length; i++)
                     {
                         Donation data = JsonUtility.FromJson<Donation>(d.bdy[i].extras);
-                        if(data.payAmount == drm.price) donation.Add(data);
+                        string nickname = "익명의 후원자";
+                        if (data.nickname != null) nickname = data.nickname;
+                        if (data.payAmount == drm.price) drm.donation.Add(new DonationRecord { nickName = nickname, reward = -1 });
                     }
                 }
                 break;
@@ -610,7 +622,7 @@ public class ChzzkChat : MonoBehaviour
         if (!stopConnect) Connect();
     }
 
-    public void DRSave(string _filePath, List<Donation> data)
+    public void DRSave(string _filePath, List<DonationRecord> data)
     {
         try
         {
@@ -625,7 +637,7 @@ public class ChzzkChat : MonoBehaviour
         }
     }
 
-    public List<Donation> DRLoad(string _filePath)
+    public List<DonationRecord> DRLoad(string _filePath)
     {
         try
         {
