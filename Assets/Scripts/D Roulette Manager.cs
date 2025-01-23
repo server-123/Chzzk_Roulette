@@ -28,7 +28,7 @@ public class DRouletteManager : MonoBehaviour
                 for (int i = 0; i < Child; i++)
                 {
                     GameObject it = DContent.transform.GetChild(i).gameObject;
-                    Item item = it.GetComponent<Item>();
+                    Dtem item = it.GetComponent<Dtem>();
 
                     item.index = i;
                 }
@@ -64,7 +64,7 @@ public class DRouletteManager : MonoBehaviour
             for (int i = 0; i < Child; i++)
             {
                 GameObject it = DContent.transform.GetChild(i).gameObject;
-                Item items = it.GetComponent<Item>();
+                Dtem items = it.GetComponent<Dtem>();
 
                 if (items.field.text == "")
                 {
