@@ -89,4 +89,9 @@ public class DRouletteManager : MonoBehaviour
             }
         }
     }
+
+    public int ChildCount()
+    {
+        return DContent.transform.childCount;
+    }
 }

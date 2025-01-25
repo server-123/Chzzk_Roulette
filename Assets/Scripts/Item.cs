@@ -32,7 +32,6 @@ public class Item : MonoBehaviour
 
     void Update()
     {
-        num.text = (index + 1).ToString();
         Panel.SetActive(vm.SelectedItem == index + 1);
 
         if (chz.collecting)
@@ -44,6 +43,7 @@ public class Item : MonoBehaviour
             PerBar.SetActive(true);
             X.SetActive(false);
         }
+        else num.text = (index + 1).ToString();
 
         if (vm.Private)
         {
